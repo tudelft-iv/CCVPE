@@ -20,7 +20,7 @@ KITTI dataset can be found at https://github.com/shiyujiao/HighlyAccurate <br />
 For Oxford RobotCar, the aerial image is provided by https://github.com/tudelft-iv/CrossViewMetricLocalization, the ground images are from https://robotcar-dataset.robots.ox.ac.uk/datasets/
 
 ### Models
-Our trained models are avaiable at: https://surfdrive.surf.nl/files/index.php/s/cbyPn7NQoOOzlqp
+Our trained models are available at: https://surfdrive.surf.nl/files/index.php/s/cbyPn7NQoOOzlqp
 
 ### Training and testing
 Training on VIGOR dataset: <br />
