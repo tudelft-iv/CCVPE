@@ -23,13 +23,12 @@ For Oxford RobotCar, the aerial image is provided by https://github.com/tudelft-
 Our trained models are available at: https://surfdrive.surf.nl/files/index.php/s/cbyPn7NQoOOzlqp
 
 ### Training and testing
-Training on VIGOR dataset: <br />
-samearea split: `python train_VIGOR.py --area samearea` <br />
-crossarea split: `python train_VIGOR.py --area crossarea` <br />
+Training or testing on VIGOR dataset: <br />
+samearea split: `python train_VIGOR.py --area samearea` or `python train_VIGOR.py --area samearea --training False` <br />
+crossarea split: `python train_VIGOR.py --area crossarea` or `python train_VIGOR.py --area crossarea --training False` <br />
 
-Test on VIGOR dataset: <br />
-samearea split: `python train_VIGOR.py --area samearea --training False` <br />
-crossarea split: `python train_VIGOR.py --area crossarea --training False` <br />
+Training or testing on KITTI dataset: <br />
+`python train_KITTI.py` or `python train_KITTI.py --training False` <br />
 
 
 ### Citations
