@@ -5,6 +5,7 @@ import torch
 import numpy as np
 import random
 from PIL import ImageFile
+import torchvision.transforms.functional as TF
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 torch.manual_seed(17)
 np.random.seed(0)
@@ -13,7 +14,7 @@ np.random.seed(0)
 # VIGOR
 
 class VIGORDataset(Dataset):
-    def __init__(self, root='/scratch/zxia/datasets/VIGOR', label_root = 'splits_new', split='samearea', train=True, transform=None, pos_only=True):
+    def __init__(self, root, label_root = 'splits_new', split='samearea', train=True, transform=None, pos_only=True):
         self.root = root
         self.label_root = label_root
         self.split = split
@@ -332,6 +333,21 @@ class OxfordRobotCarDataset(Dataset):
     
 # ---------------------------------------------------------------------------------
 # KITTI, our code is developed based on https://github.com/shiyujiao/HighlyAccurate
+Default_lat = 49.015
+Satmap_zoom = 18
+SatMap_original_sidelength = 512 
+SatMap_process_sidelength = 512 
+satmap_dir = 'satmap'
+grdimage_dir = 'raw_data'
+oxts_dir = 'oxts/data'  
+left_color_camera_dir = 'image_02/data'
+CameraGPS_shift_left = [1.08, 0.26]
+
+def get_meter_per_pixel(lat=Default_lat, zoom=Satmap_zoom, scale=SatMap_process_sidelength/SatMap_original_sidelength):
+    meter_per_pixel = 156543.03392 * np.cos(lat * np.pi/180.) / (2**zoom)	
+    meter_per_pixel /= 2 # because use scale 2 to get satmap 
+    meter_per_pixel /= scale
+    return meter_per_pixel
 
 class SatGrdDataset(Dataset):
     def __init__(self, root, file,
@@ -463,7 +479,7 @@ class SatGrdDataset(Dataset):
         orientation_map[1,:,:] = np.sin(orientation_angle * np.pi/180)
         
         
-        return sat_map, grd_left_imgs[0], gt, gt_with_ori, orientation_map
+        return sat_map, grd_left_imgs[0], gt, gt_with_ori, orientation_map, orientation_angle
                
 class SatGrdDatasetTest(Dataset):
     def __init__(self, root, file,
@@ -543,9 +559,7 @@ class SatGrdDatasetTest(Dataset):
                                            0, 1, CameraGPS_shift_left[1] / self.meter_per_pixel),
                                           resample=PIL.Image.BILINEAR)
         
-        # randomly generate shift
-        # gt_shift_x = np.random.uniform(-1, 1)  # --> right as positive, parallel to the heading direction
-        # gt_shift_y = np.random.uniform(-1, 1)  # --> up as positive, vertical to the heading direction
+        # load the shifts 
         gt_shift_x = -float(gt_shift_x)  # --> right as positive, parallel to the heading direction
         gt_shift_y = -float(gt_shift_y)  # --> up as positive, vertical to the heading direction
 
@@ -599,4 +613,7 @@ class SatGrdDatasetTest(Dataset):
         
         
         
-        return sat_map, grd_left_imgs[0], gt, gt_with_ori, orientation_map
+        return sat_map, grd_left_imgs[0], gt, gt_with_ori, orientation_map, orientation_angle
+
+    
+    

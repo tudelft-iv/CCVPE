@@ -10,8 +10,6 @@ from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
 import torch
 import torch.nn as nn
-from torchvision.utils import make_grid
-from torchvision.utils import save_image
 import numpy as np
 import math
 from datasets import VIGORDataset
@@ -29,10 +27,10 @@ parser.add_argument('--training', choices=('True','False'), default='True')
 parser.add_argument('--pos_only', choices=('True','False'), default='True')
 parser.add_argument('-l', '--learning_rate', type=float, help='learning rate', default=1e-4)
 parser.add_argument('-b', '--batch_size', type=int, help='batch size', default=8)
-parser.add_argument('-w_ori', '--weight_ori', type=float, help='weight on orientation loss', default=1e1)
-parser.add_argument('-w_info', '--weight_infoNCE', type=float, help='weight on infoNCE loss', default=1e4)
+parser.add_argument('--weight_ori', type=float, help='weight on orientation loss', default=1e1)
+parser.add_argument('--weight_infoNCE', type=float, help='weight on infoNCE loss', default=1e4)
 parser.add_argument('-f', '--FoV', type=int, help='field of view', default=360)
-
+dataset_root='/scratch/zxia/datasets/VIGOR'
 
 args = vars(parser.parse_args())
 area = args['area']
@@ -68,7 +66,7 @@ transform_sat = transforms.Compose([
 ])
 
 
-vigor = VIGORDataset(split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat))
+vigor = VIGORDataset(dataset_root, split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat))
 if training is True:
     dataset_length = int(vigor.__len__())
     index_list = np.arange(vigor.__len__())
@@ -235,7 +233,8 @@ if training:
     print('Finished Training')
 
 else:
-#     test_model_path = 'models/VIGOR/samearea/model.pt'
+    test_model_path = 'models/VIGOR/samearea/model.pt'
+    print('load model from: ' + test_model_path)
 
     CVM_model.load_state_dict(torch.load(test_model_path))
     CVM_model.to(device)
@@ -314,12 +313,12 @@ else:
                 probability_at_gt.append(heatmap[batch_idx, 0, loc_gt[1], loc_gt[2]])
 
 
-    print('mean distance error', np.mean(distance_in_meters))   
-    print('median distance error', np.median(distance_in_meters))
+    print('mean localization error (m): ', np.mean(distance_in_meters))   
+    print('median localization error (m): ', np.median(distance_in_meters))
     
     print('---------------------------------------')
-    print('mean orientation error', np.mean(orientation_error))
-    print('median orientation error', np.median(orientation_error))   
+    print('mean orientation error (degrees): ', np.mean(orientation_error))
+    print('median orientation error (degrees): ', np.median(orientation_error))   
     
     print('---------------------------------------')
     print('mean probability at gt', np.mean(probability_at_gt))   
