@@ -30,6 +30,11 @@ crossarea split: `python train_VIGOR.py --area crossarea` or `python train_VIGOR
 Training or testing on KITTI dataset: <br />
 `python train_KITTI.py` or `python train_KITTI.py --training False` <br />
 
+### Visualize qualitative results
+Visualize qualitative results on VIGOR same-area or cross-area test set: <br />
+`python visualize_qualitative_results_VIGOR.py --area samearea --ori_prior 180 --idx 0` <br />
+idx: image index in VIGOR test set <br />
+ori_prior: X means assuming known orientation with $\pm$X&deg noise, 180 means no orientation prior
 
 ### Citations
 ```
