@@ -33,8 +33,8 @@ Training or testing on KITTI dataset: <br />
 ### Visualize qualitative results
 Visualize qualitative results on VIGOR same-area or cross-area test set: <br />
 `python visualize_qualitative_results_VIGOR.py --area samearea --ori_prior 180 --idx 0` <br />
-idx: image index in VIGOR test set <br />
-ori_prior: X means assuming known orientation with $\pm$X&deg noise, 180 means no orientation prior
+`idx`: image index in VIGOR test set <br />
+`ori_prior`: $X$ means assuming known orientation with $&plusmn X &deg$ noise, $180$ means no orientation prior
 
 ### Citations
 ```
