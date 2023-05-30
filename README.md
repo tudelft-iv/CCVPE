@@ -29,6 +29,12 @@ crossarea split: `python train_VIGOR.py --area crossarea` or `python train_VIGOR
 
 Training or testing on KITTI dataset: <br />
 `python train_KITTI.py` or `python train_KITTI.py --training False` <br />
+If you want to train or test with an orientation prior, e.g. $&plusmn 10 &deg$: <br />
+`python train_KITTI.py --rotation_range 10` or `python train_KITTI.py --training False --rotation_range 10` <br />
+We provide the model trained with $&plusmn 10 &deg$ orientation prior, remember to update the `test_model_path` in `train_KITTI.py`
+
+Training or testing on Oxford RobotCar dataset: <br />
+`python train_OxfordRobotCar.py` or `python train_OxfordRobotCar.py --training False`
 
 ### Visualize qualitative results
 Visualize qualitative results on VIGOR same-area or cross-area test set: <br />
