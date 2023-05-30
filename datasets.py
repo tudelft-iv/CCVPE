@@ -5,8 +5,10 @@ import torch
 import numpy as np
 import random
 from PIL import ImageFile
-import torchvision.transforms.functional as TF
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+import torchvision.transforms.functional as TF
+import math
+
 torch.manual_seed(17)
 np.random.seed(0)
 
@@ -167,11 +169,11 @@ class VIGORDataset(Dataset):
 # Oxford RobotCar
 
 class OxfordRobotCarDataset(Dataset):
-    def __init__(self, grd_image_root='/scratch/zxia/datasets/Oxford_5m_sampling/', 
-                 sat_path='/scratch/zxia/datasets/Oxford_5m_sampling/satellite_map_new.png', 
-                 train=True, transform=None):
+    def __init__(self, grd_image_root, 
+                 sat_path, 
+                 split='train', transform=None):
         self.grd_image_root = grd_image_root
-        self.split = 'train'
+        self.split = split
         if transform != None:
             self.grdimage_transform = transform[0]
             self.satimage_transform = transform[1]
@@ -189,8 +191,8 @@ class OxfordRobotCarDataset(Dataset):
                     self.grdList.append(content.split(" "))
 
             with open(self.grd_image_root+'train_yaw.npy', 'rb') as f:
-                grdYaw = np.load(f)
-        
+                self.grdYaw = np.load(f)
+            
         elif self.split == 'val':
             with open(self.grd_image_root+'validation.txt', 'r') as filehandle:
                 filecontents = filehandle.readlines()
@@ -198,7 +200,7 @@ class OxfordRobotCarDataset(Dataset):
                     content = line[:-1]
                     self.grdList.append(content.split(" "))
             with open(self.grd_image_root+'val_yaw.npy', 'rb') as f:
-                grdYaw = np.load(f)
+                self.grdYaw = np.load(f)
       
         elif self.split == 'test':
             test_2015_08_14_14_54_57 = []
@@ -219,12 +221,16 @@ class OxfordRobotCarDataset(Dataset):
                 for line in filecontents:
                     content = line[:-1]
                     test_2015_02_10_11_58_05.append(content.split(" "))
-                
+            
+            self.test1_len = len(test_2015_08_14_14_54_57)
+            self.test2_len = len(test_2015_08_12_15_04_18)
+            self.test3_len = len(test_2015_02_10_11_58_05)
+            
             self.grdList = test_2015_08_14_14_54_57 + test_2015_08_12_15_04_18 + test_2015_02_10_11_58_05
             
             with open(self.grd_image_root+'test_yaw.npy', 'rb') as f:
-                grdYaw = np.load(f)
-                                
+                self.grdYaw = np.load(f)
+
         self.grdNum = len(self.grdList)
         grdarray = np.array(self.grdList)
         self.grdUTM = np.transpose(grdarray[:,2:].astype(np.float64))
@@ -254,7 +260,11 @@ class OxfordRobotCarDataset(Dataset):
         A, res, rank, s = np.linalg.lstsq(X, Y)
 
         self.transform = lambda x: unpad(np.dot(pad(x), A))
-
+    
+    def __len__(self):
+        return self.grdNum
+    
+    
     def __getitem__(self, idx):
         
         # ground
@@ -326,9 +336,9 @@ class OxfordRobotCarDataset(Dataset):
         gt_with_ori = torch.tensor(gt_with_ori)
         
         orientation = torch.full([2, height, width], np.cos(orientation_angle * np.pi/180))
-        orientation[1,:,:] = np.sin(orientation_angle * np.pi/180)        
+        orientation[1,:,:] = np.sin(orientation_angle * np.pi/180)   
      
-        return grd, sat, gt, gt_with_ori, orientation
+        return grd, sat, gt, gt_with_ori, orientation, orientation_angle
 
     
 # ---------------------------------------------------------------------------------

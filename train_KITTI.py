@@ -279,7 +279,7 @@ if training:
     print('Finished Training')
 
 else:
-    test_model_path = 'models/KITTI/model.pt'
+    test_model_path = 'models/KITTI/no_orientation_prior/model.pt'
     
     print('load model from: ' + test_model_path)
     CVM_model.load_state_dict(torch.load(test_model_path))
