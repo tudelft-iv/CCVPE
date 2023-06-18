@@ -26,6 +26,8 @@ Our trained models are available at: https://surfdrive.surf.nl/files/index.php/s
 Training or testing on VIGOR dataset: <br />
 samearea split: `python train_VIGOR.py --area samearea` or `python train_VIGOR.py --area samearea --training False` <br />
 crossarea split: `python train_VIGOR.py --area crossarea` or `python train_VIGOR.py --area crossarea --training False` <br />
+If you want to test the model with an orientation prior that contains up to $&plusmn X &deg$ noise, e.g. $&plusmn 72 &deg$, add the argument `--ori_noise 72` <br />
+If you want to test the model with images with a limited field-of-view, e.g. $180 &deg$, add the argument `--FoV 180`
 
 Training or testing on KITTI dataset: <br />
 `python train_KITTI.py` or `python train_KITTI.py --training False` <br />
