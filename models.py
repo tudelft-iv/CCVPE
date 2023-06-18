@@ -344,12 +344,13 @@ class CVM_VIGOR(nn.Module):
     
 
 class CVM_VIGOR_ori_prior(nn.Module):
-    def __init__(self, device, ori_prior):
+    def __init__(self, device, ori_noise, circular_padding=True):
         super(CVM_VIGOR_ori_prior, self).__init__()
         self.device = device
-        self.ori_prior = ori_prior
+        self.circular_padding = circular_padding
+        self.ori_noise = ori_noise
         
-        self.grd_efficientnet = EfficientNet.from_pretrained('efficientnet-b0', True)
+        self.grd_efficientnet = EfficientNet.from_pretrained('efficientnet-b0', self.circular_padding)
 
         self.grd_feature_to_descriptor1 = nn.Sequential(
                                     nn.Conv2d(1280, 64, 1),
@@ -485,13 +486,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = sat_descriptor_map.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map1, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(sat_descriptor_map, shifts=-i*64, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map1*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked = matching_score
             else:
                 matching_score_stacked = torch.cat([matching_score_stacked, matching_score], dim=1)
@@ -521,13 +522,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = x.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map2, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(x, shifts=-i*32, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map2*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked2 = matching_score
             else:
                 matching_score_stacked2 = torch.cat([matching_score_stacked2, matching_score], dim=1)
@@ -543,13 +544,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = x.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map3, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(x, shifts=-i*16, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map3*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked3 = matching_score
             else:
                 matching_score_stacked3 = torch.cat([matching_score_stacked3, matching_score], dim=1)
@@ -565,13 +566,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = x.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map4, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(x, shifts=-i*8, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map4*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked4 = matching_score
             else:
                 matching_score_stacked4 = torch.cat([matching_score_stacked4, matching_score], dim=1)
@@ -587,13 +588,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = x.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map5, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(x, shifts=-i*4, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map5*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked5 = matching_score
             else:
                 matching_score_stacked5 = torch.cat([matching_score_stacked5, matching_score], dim=1)
@@ -609,13 +610,13 @@ class CVM_VIGOR_ori_prior(nn.Module):
         sat_des_len = x.size()[1]
         grd_map_norm = torch.norm(grd_descriptor_map6, p='fro', dim=1, keepdim=True)
         
-        for i in range(-int(self.ori_prior/18), int(self.ori_prior/18)+1):
+        for i in range(-int(self.ori_noise/18), int(self.ori_noise/18)+1):
             sat_descriptor_map_rolled = torch.roll(x, shifts=-i*2, dims=1)
             sat_descriptor_map_window = sat_descriptor_map_rolled[:,:grd_des_len, :, :]
             sat_map_norm = torch.norm(sat_descriptor_map_window, p='fro', dim=1, keepdim=True)
 
             matching_score = torch.sum((grd_descriptor_map6*sat_descriptor_map_window), dim=1, keepdim=True) / (sat_map_norm * grd_map_norm) # cosine similarity
-            if i == -int(self.ori_prior/18):
+            if i == -int(self.ori_noise/18):
                 matching_score_stacked6 = matching_score
             else:
                 matching_score_stacked6 = torch.cat([matching_score_stacked6, matching_score], dim=1)

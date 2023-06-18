@@ -16,12 +16,14 @@ np.random.seed(0)
 # VIGOR
 
 class VIGORDataset(Dataset):
-    def __init__(self, root, label_root = 'splits_new', split='samearea', train=True, transform=None, pos_only=True):
+    def __init__(self, root, label_root = 'splits_new', split='samearea', train=True, transform=None, pos_only=True, ori_noise=180):
         self.root = root
         self.label_root = label_root
         self.split = split
         self.train = train
         self.pos_only = pos_only
+        self.ori_noise = ori_noise
+        
         if transform != None:
             self.grdimage_transform = transform[0]
             self.satimage_transform = transform[1]
@@ -103,7 +105,11 @@ class VIGORDataset(Dataset):
         grd = self.grdimage_transform(grd)
         
         # generate a random rotation 
-        rotation = np.random.uniform(low=0.0, high=1.0) # 
+        if self.ori_noise >= 180:
+            rotation = np.random.uniform(low=0.0, high=1.0) # 
+        else:
+            rotation_range = self.ori_noise / 360
+            rotation = np.random.uniform(low=-rotation_range, high=rotation_range)
         grd = torch.roll(grd, (torch.round(torch.as_tensor(rotation)*grd.size()[2]).int()).item(), dims=2)
                 
         orientation_angle = rotation * 360 # 0 means heading North, counter-clockwise increasing

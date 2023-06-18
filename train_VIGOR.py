@@ -1,6 +1,6 @@
 import os
 # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-# os.environ['CUDA_VISIBLE_DEVICES'] = "7"
+# os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 # os.environ["MKL_NUM_THREADS"] = "4" 
 # os.environ["NUMEXPR_NUM_THREADS"] = "4" 
 # os.environ["OMP_NUM_THREADS"] = "4" 
@@ -15,6 +15,7 @@ import math
 from datasets import VIGORDataset
 from losses import infoNCELoss, cross_entropy_loss, orientation_loss
 from models import CVM_VIGOR as CVM
+from models import CVM_VIGOR_ori_prior as CVM_with_ori_prior
 
 torch.manual_seed(17)
 np.random.seed(0)
@@ -30,6 +31,7 @@ parser.add_argument('-b', '--batch_size', type=int, help='batch size', default=8
 parser.add_argument('--weight_ori', type=float, help='weight on orientation loss', default=1e1)
 parser.add_argument('--weight_infoNCE', type=float, help='weight on infoNCE loss', default=1e4)
 parser.add_argument('-f', '--FoV', type=int, help='field of view', default=360)
+parser.add_argument('--ori_noise', type=float, help='noise in orientation prior, 180 means unknown orientation', default=180.)
 dataset_root='/scratch/zxia/datasets/VIGOR'
 
 args = vars(parser.parse_args())
@@ -43,6 +45,8 @@ pos_only = args['pos_only'] == 'True'
 FoV = args['FoV']
 pos_only = args['pos_only']
 label = area + '_HFoV' + str(FoV)
+ori_noise = args['ori_noise']
+ori_noise = 18 * (ori_noise // 18) # round the closest multiple of 18 degrees within prior 
 
 
 if FoV == 360:
@@ -66,7 +70,7 @@ transform_sat = transforms.Compose([
 ])
 
 
-vigor = VIGORDataset(dataset_root, split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat))
+vigor = VIGORDataset(dataset_root, split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat), ori_noise=ori_noise)
 if training is True:
     dataset_length = int(vigor.__len__())
     index_list = np.arange(vigor.__len__())
@@ -81,10 +85,9 @@ else:
     test_dataloader = DataLoader(vigor, batch_size=batch_size, shuffle=False)
 
 
-torch.cuda.empty_cache()
-CVM_model = CVM(device, circular_padding)
-
 if training:
+    torch.cuda.empty_cache()
+    CVM_model = CVM(device, circular_padding)
     CVM_model.to(device)
     for param in CVM_model.parameters():
         param.requires_grad = True
@@ -233,6 +236,8 @@ if training:
     print('Finished Training')
 
 else:
+    torch.cuda.empty_cache()
+    CVM_model = CVM_with_ori_prior(device, ori_noise, circular_padding)
     test_model_path = 'models/VIGOR/samearea/model.pt'
     print('load model from: ' + test_model_path)
 
