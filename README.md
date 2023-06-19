@@ -6,6 +6,7 @@ This work is an extension of ["Visual Cross-View Metric Localization with Dense 
 ![](figures/overview.png)
 
 Demo video of per-frame pose estimation on Oxford RobotCar traversals with different weather and lighting conditions
+
 [![CCVPE Demo Video on Oxford RobotCar](http://img.youtube.com/vi/9p7bccGZ82Q/0.jpg)](http://www.youtube.com/watch?v=9p7bccGZ82Q "CCVPE Demo Video on Oxford RobotCar")
 
 
