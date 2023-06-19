@@ -1,11 +1,17 @@
 # CCVPE: Convolutional Cross-View Pose Estimation
+[[`Paper`](https://arxiv.org/abs/2303.05915)] [[`Demo Video`](http://www.youtube.com/watch?v=9p7bccGZ82Q)] [[`BibTeX`](#citation)]
 
-This work is an extention of "Visual Cross-View Metric Localization with Dense Uncertainty Estimates, ECCV2022"
+This work is an extension of ["Visual Cross-View Metric Localization with Dense Uncertainty Estimates, ECCV2022"](https://github.com/tudelft-iv/CrossViewMetricLocalization)
 
 ![](figures/overview.png)
 
-<img src="figures/VIGOR_HFOV108.gif" width="300" height="450"/> <img src="figures/VIGOR_HFOV180.gif" width="300" height="450"/>
-<img src="figures/VIGOR_HFOV360.gif" width="300" height="450"/>
+Demo video of per-frame pose estimation on Oxford RobotCar traversals with different weather and lighting conditions
+[![CCVPE Demo Video on Oxford RobotCar](http://img.youtube.com/vi/9p7bccGZ82Q/0.jpg)](http://www.youtube.com/watch?v=9p7bccGZ82Q "CCVPE Demo Video on Oxford RobotCar")
+
+
+Pose estimation (localization + orientation estimation) on images with different horizontal field-of-view (HFoV). From left to right: HFoV= $360 &deg$, $180 &deg$, $108 &deg$
+
+<img src="figures/VIGOR_HFOV360.gif" width="300" height="450"/> <img src="figures/VIGOR_HFOV180.gif" width="300" height="450"/> <img src="figures/VIGOR_HFOV108.gif" width="300" height="450"/>
 
 
 
@@ -24,16 +30,16 @@ Our trained models are available at: https://surfdrive.surf.nl/files/index.php/s
 
 ### Training and testing
 Training or testing on VIGOR dataset: <br />
-samearea split: `python train_VIGOR.py --area samearea` or `python train_VIGOR.py --area samearea --training False` <br />
-crossarea split: `python train_VIGOR.py --area crossarea` or `python train_VIGOR.py --area crossarea --training False` <br />
-If you want to test the model with an orientation prior that contains up to $&plusmn X &deg$ noise, e.g. $&plusmn 72 &deg$, add the argument `--ori_noise 72` <br />
-If you want to test the model with images with a limited field-of-view, e.g. $180 &deg$, add the argument `--FoV 180`
+samearea split: `python train_VIGOR.py --area samearea` <br />
+crossarea split: `python train_VIGOR.py --area crossarea` <br />
+For testing, add argument `--training False` <br />
+For testing with an orientation prior that contains up to $&plusmn X &deg$ noise, e.g. $&plusmn 72 &deg$, add the argument `--ori_noise 72`. $X=0$ corresponds to testing with known orientation <br />
+For testing with images with a limited HFoV, e.g. $180 &deg$, add the argument `--FoV 180`
 
-Training or testing on KITTI dataset: <br />
-`python train_KITTI.py` or `python train_KITTI.py --training False` <br />
-If you want to train or test with an orientation prior, e.g. $&plusmn 10 &deg$: <br />
-`python train_KITTI.py --rotation_range 10` or `python train_KITTI.py --training False --rotation_range 10` <br />
-We provide the model trained with $&plusmn 10 &deg$ orientation prior, remember to update the `test_model_path` in `train_KITTI.py`
+Training on KITTI dataset: `python train_KITTI.py` <br />
+For testing, add argument `--training False` <br />
+For training or testing with an orientation prior, e.g. $&plusmn 10 &deg$, add argument `--rotation_range 10` <br />
+We also provide the model trained with $&plusmn 10 &deg$ orientation prior, please change the `test_model_path` in `train_KITTI.py`
 
 Training or testing on Oxford RobotCar dataset: <br />
 `python train_OxfordRobotCar.py` or `python train_OxfordRobotCar.py --training False`
@@ -44,7 +50,7 @@ Visualize qualitative results on VIGOR same-area or cross-area test set: <br />
 `idx`: image index in VIGOR test set <br />
 `ori_prior`: $X$ means assuming known orientation with $&plusmn X &deg$ noise, $180$ means no orientation prior
 
-### Citations
+### Citation
 ```
 @article{xia2023convolutional,
   title={Convolutional Cross-View Pose Estimation},
