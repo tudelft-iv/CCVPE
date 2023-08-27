@@ -145,15 +145,16 @@ class VIGORDataset(Dataset):
         gt[0, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) )
         gt = torch.tensor(gt)
         
-        # find the ground truth orientation index, we use 20 orientation bins, and each bin is 18 degrees
-        index = int(orientation_angle // 18)
-        ratio = (orientation_angle % 18) / 18
-        if index == 0:
-            gt_with_ori[0, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * (1-ratio)
-            gt_with_ori[19, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * ratio
-        else:
-            gt_with_ori[20-index, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * (1-ratio)
-            gt_with_ori[20-index-1, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * ratio
+        if self.train: 
+            # find the ground truth orientation index, we use 20 orientation bins, and each bin is 18 degrees
+            index = int(orientation_angle // 18)
+            ratio = (orientation_angle % 18) / 18
+            if index == 0:
+                gt_with_ori[0, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * (1-ratio)
+                gt_with_ori[19, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * ratio
+            else:
+                gt_with_ori[20-index, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * (1-ratio)
+                gt_with_ori[20-index-1, :, :] = np.exp(-( (d-mu)**2 / ( 2.0 * sigma**2 ) ) ) * ratio
         gt_with_ori = torch.tensor(gt_with_ori)
         
         orientation = torch.full([2, height, width], np.cos(orientation_angle * np.pi/180))
