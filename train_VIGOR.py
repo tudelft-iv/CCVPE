@@ -32,7 +32,7 @@ parser.add_argument('--weight_ori', type=float, help='weight on orientation loss
 parser.add_argument('--weight_infoNCE', type=float, help='weight on infoNCE loss', default=1e4)
 parser.add_argument('-f', '--FoV', type=int, help='field of view', default=360)
 parser.add_argument('--ori_noise', type=float, help='noise in orientation prior, 180 means unknown orientation', default=180.)
-dataset_root='/scratch/zxia/datasets/VIGOR'
+dataset_root='/home/zxia/datasets/VIGOR'
 
 args = vars(parser.parse_args())
 area = args['area']
@@ -70,7 +70,15 @@ transform_sat = transforms.Compose([
 ])
 
 
-vigor = VIGORDataset(dataset_root, split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat), ori_noise=ori_noise)
+if training is False and ori_noise==180: # load pre-defined random orientation for testing
+    if area == 'samearea':
+        with open('samearea_orientation_test.npy', 'rb') as f:
+            random_orientation = np.load(f)
+    elif area == 'crossarea':
+        with open('crossarea_orientation_test.npy', 'rb') as f:
+            random_orientation = np.load(f)
+
+vigor = VIGORDataset(dataset_root, split=area, train=training, pos_only=pos_only, transform=(transform_grd, transform_sat), ori_noise=ori_noise, random_orientation=random_orientation)
 if training is True:
     dataset_length = int(vigor.__len__())
     index_list = np.arange(vigor.__len__())
