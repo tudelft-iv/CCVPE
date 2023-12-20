@@ -1,4 +1,4 @@
-# CCVPE: Convolutional Cross-View Pose Estimation
+# (Accepted by T-PAMI) CCVPE: Convolutional Cross-View Pose Estimation
 [[`Paper`](https://arxiv.org/pdf/2303.05915v2.pdf)] [[`Demo Video`](http://www.youtube.com/watch?v=9p7bccGZ82Q)] [[`BibTeX`](#citation)]
 
 This work is an extension of ["Visual Cross-View Metric Localization with Dense Uncertainty Estimates, ECCV2022"](https://github.com/tudelft-iv/CrossViewMetricLocalization)
