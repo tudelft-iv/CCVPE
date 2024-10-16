@@ -10,7 +10,7 @@ Demo video of per-frame pose estimation on Oxford RobotCar traversals with diffe
 [![CCVPE Demo Video on Oxford RobotCar](http://img.youtube.com/vi/9p7bccGZ82Q/0.jpg)](http://www.youtube.com/watch?v=9p7bccGZ82Q "CCVPE Demo Video on Oxford RobotCar")
 
 
-Pose estimation (localization + orientation estimation) on images with different horizontal field-of-view (HFoV). From left to right: HFoV= $360 &deg$, $180 &deg$, $108 &deg$
+Pose estimation (localization + orientation estimation) on images with different horizontal field-of-view (HFoV). From left to right: HFoV= $360^{\\circ}$, $180^{\\circ}$, $108^{\\circ}$
 
 <img src="figures/VIGOR_HFOV360.gif" width="300" height="450"/> <img src="figures/VIGOR_HFOV180.gif" width="300" height="450"/> <img src="figures/VIGOR_HFOV108.gif" width="300" height="450"/>
 
@@ -34,13 +34,13 @@ Training or testing on VIGOR dataset: <br />
 samearea split: `python train_VIGOR.py --area samearea` <br />
 crossarea split: `python train_VIGOR.py --area crossarea` <br />
 For testing, add argument `--training False` <br />
-For testing with an orientation prior that contains up to $&plusmn X &deg$ noise, e.g. $&plusmn 72 &deg$, add the argument `--ori_noise 72`. $X=0$ corresponds to testing with known orientation <br />
-For testing with images with a limited HFoV, e.g. $180 &deg$, add the argument `--FoV 180`
+For testing with an orientation prior that contains up to $X^{\\circ}$ noise, e.g. for $[-72^{\\circ}, +72^{\\circ}]$ noise, add the argument `--ori_noise 72`. $X=0$ corresponds to testing with known orientation <br />
+For testing with images with a limited HFoV, e.g. $180^{\\circ}$, add the argument `--FoV 180`
 
 Training on KITTI dataset: `python train_KITTI.py` <br />
 For testing, add argument `--training False` <br />
-For training or testing with an orientation prior, e.g. $&plusmn 10 &deg$, add argument `--rotation_range 10` <br />
-We also provide the model trained with $&plusmn 10 &deg$ orientation prior, please change the `test_model_path` in `train_KITTI.py`
+For training or testing with an orientation prior, e.g. $[-10^{\\circ}, +10^{\\circ}]$, add argument `--rotation_range 10` <br />
+We also provide the model trained with $[-10^{\\circ}, +10^{\\circ}]$ orientation prior, please change the `test_model_path` in `train_KITTI.py`
 
 Training or testing on Oxford RobotCar dataset: <br />
 `python train_OxfordRobotCar.py` or `python train_OxfordRobotCar.py --training False`
@@ -49,14 +49,18 @@ Training or testing on Oxford RobotCar dataset: <br />
 Visualize qualitative results on VIGOR same-area or cross-area test set: <br />
 `python visualize_qualitative_results_VIGOR.py --area samearea --ori_prior 180 --idx 0` <br />
 `idx`: image index in VIGOR test set <br />
-`ori_prior`: $X$ means assuming known orientation with $&plusmn X &deg$ noise, $180$ means no orientation prior
+`ori_prior`: $X$ means assuming known orientation with $[-X^{\\circ}, +X^{\\circ}]$ noise, $X=180$ stands for no orientation prior
 
 ### Citation
 ```
-@article{xia2023convolutional,
-  title={Convolutional Cross-View Pose Estimation},
-  author={Xia, Zimin and Booij, Olaf and Kooij, Julian FP},
-  journal={arXiv preprint arXiv:2303.05915},
-  year={2023}
-}
+@ARTICLE{10373898,
+  author={Xia, Zimin and Booij, Olaf and Kooij, Julian F. P.},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
+  title={Convolutional Cross-View Pose Estimation}, 
+  year={2024},
+  volume={46},
+  number={5},
+  pages={3813-3831},
+  keywords={Location awareness;Cameras;Pose estimation;Task analysis;Feature extraction;Image retrieval;Decoding;Aerial imagery;camera pose estimation;cross-view matching;localization;orientation estimation},
+  doi={10.1109/TPAMI.2023.3346924}}
 ```
